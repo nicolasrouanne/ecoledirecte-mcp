@@ -29,7 +29,7 @@ terminal:
 uvx --from git+https://github.com/nicolasrouanne/ecoledirecte-mcp ecoledirecte-mcp login
 ```
 
-This stores a trusted-device token in `~/.local/state/ecoledirecte-mcp/state.json` (mode 600), so
+This stores a trusted-device token in `~/.local/state/ecoledirecte-mcp/trusted_device.json` (mode 600), so
 later logins skip the question. Each login that does need the question counts towards the account
 lockout, hence the token. If École Directe revokes it, the tools say so: run `login` again.
 
@@ -50,6 +50,18 @@ Then register the server, for instance in Claude Code:
   }
 }
 ```
+
+## Development
+
+```sh
+uv sync
+uv run pytest          # against an in-memory fake of the API, no network
+uv run ruff check . && uv run ruff format --check . && uv run mypy
+```
+
+Layout: `transport` (HTTP, token rotation), `auth` (login and security question), `client`
+(session, retry on expired token), `messaging` (folders, read, archive), `models` (typed payloads),
+`server` (MCP tools), `cli`.
 
 ## Credits
 
